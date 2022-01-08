@@ -27,7 +27,7 @@ class TourData{
   address = data['addr1'],
   mapx = data['mapx'],
   mapy = data['mapy'],
-  imagePath = data['firstImage'];
+  imagePath = data['firstimage'];
 
   Map<String, dynamic> toMap(){
     return{
