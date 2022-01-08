@@ -2,6 +2,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:flutter/material.dart';
 import 'package:modu_tour/signPage.dart';
 import 'login.dart';
+import 'mainPage.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,7 +33,8 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes:{
         '/': (context) => LoginPage(),
-        '/sign': (context) => SignPage()
+        '/sign': (context) => SignPage(),
+        '/main' : (context) => MainPage(),
       }
     );
   }
