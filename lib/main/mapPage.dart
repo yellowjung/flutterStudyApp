@@ -155,6 +155,9 @@ class _MapPage extends State<MapPage>{
                                 databaseReference: widget.databaseReference,
                               )));
                         },
+                        onDoubleTap: (){
+                          insertTour(widget.db!, tourData[index]);
+                        }
                       )
                     );
                   },
@@ -207,5 +210,15 @@ class _MapPage extends State<MapPage>{
     }else{
       print('error');
     }
+  }
+
+  void insertTour(Future<Database> db, TourData info) async{
+    final Database database = await db;
+    await database.insert('place', info.toMap(),
+    conflictAlgorithm: ConflictAlgorithm.replace)
+    .then((value) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('즐겨찾기에 추가되었습니다')));
+    });
   }
 }
