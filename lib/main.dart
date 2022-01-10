@@ -5,6 +5,9 @@ import 'login.dart';
 import 'mainPage.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,12 +53,62 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes:{
-        '/': (context) => LoginPage(),
+        '/': (context) {
+          return FutureBuilder(
+            future: Firebase.initializeApp(),
+            builder: (context, snapshot){
+              if(snapshot.hasError){
+                return Center(
+                  child: Text('Error'),
+                );
+              }
+
+              if(snapshot.connectionState == ConnectionState.done){
+                _initFirebaseMessaging(context);
+                return LoginPage();
+              }
+
+              return Center(
+                child: CircularProgressIndicator()
+              );
+            },
+          );
+        },
         '/sign': (context) => SignPage(),
         '/main' : (context) => MainPage(database),
       }
     );
   }
+}
+
+_initFirebaseMessaging(BuildContext context){
+  FirebaseMessaging.onMessage.listen((RemoteMessage event) async {
+    bool? pushCheck = await _loadData();
+    if(pushCheck!){
+      showDialog(context: context, builder: (BuildContext context){
+        return AlertDialog(
+          title: Text(event.notification!.title!),
+          content: Text(event.notification!.body!),
+          actions: [
+            TextButton(
+              child: Text("Ok"),
+              onPressed: (){
+                Navigator.of(context).pop();
+              },
+            )
+          ]
+        );
+      });
+    }
+  });
+  FirebaseMessaging.onMessage.listen((RemoteMessage event) { });
+}
+
+Future<bool?> _loadData() async{
+  var key = "push";
+  SharedPreferences pref = await SharedPreferences.getInstance();
+  var value = pref.getBool(key);
+  return value;
 }
 
 class MyHomePage extends StatefulWidget {

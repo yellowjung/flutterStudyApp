@@ -8,6 +8,7 @@ import 'package:modu_tour/data/reviews.dart';
 import 'dart:math' as math;
 import 'package:modu_tour/data/tour.dart';
 
+
 class TourDetailPage extends StatefulWidget{
   final TourData? tourData;
   final int? index;
